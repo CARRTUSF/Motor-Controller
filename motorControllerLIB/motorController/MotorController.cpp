@@ -15,6 +15,11 @@ using namespace galil;
 
 namespace ArmController
 {
+	bool ArmController::MotorController::initialized;
+	double ArmController::MotorController::enc2Radian[9];
+	double ArmController::MotorController::normalize[8];
+	string ArmController::MotorController::motorLookup[9] = {"H","A","B","C","D","E","F","G","H"};
+	long ArmController::MotorController::rad2Enc[9];
 	galilController MotorController::controller;
 
 	MotorController::MotorController()
@@ -59,7 +64,7 @@ namespace ArmController
 		return true;
 	}
 	
-	string MotorController::motorLookup[] = {"H","A","B","C","D","E","F","G","H"};
+	//ArmController::MotorController::motorLookup = {"H","A","B","C","D","E","F","G","H"};
 
 	bool MotorController::isInitialized() // return initialized
 	{

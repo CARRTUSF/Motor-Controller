@@ -43,13 +43,13 @@ namespace ArmController
 		static galilController controller;
 
 	private:
-		static __declspec(dllexport) long rad2Enc[9];
-		static __declspec(dllexport) bool initialized ;
-		static __declspec(dllexport) string ipAddr;
-		static __declspec(dllexport) double enc2Radian[9];
+		static long rad2Enc[9];
+		static bool initialized;
+		static string ipAddr;
+		static double enc2Radian[9];
 		//double rad2Enc[9];
-		static __declspec(dllexport) double normalize[8]; // doesn't apply to gripper
-		static __declspec(dllexport) string motorLookup[9];
+		static double normalize[8]; // doesn't apply to gripper
+		static string motorLookup[9];
 		//bool readSettings(); // read settings 
 		static __declspec(dllexport) bool definePosition(int motorNum, float angle);
 		static __declspec(dllexport) bool setPID(int motorNum, int P, int I, int D);
