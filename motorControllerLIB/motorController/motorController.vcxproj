@@ -55,7 +55,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>ws2_32.lib;galilCommunication.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>\motorController</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>\motorController; \MotorController\Modules</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,9 +76,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="galil.h" />
+    <ClInclude Include="Modules\galil.h" />
+    <ClInclude Include="Modules\SockStream.h" />
     <ClInclude Include="MotorController.h" />
-    <ClInclude Include="SockStream.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotorController.cpp" />

@@ -5,8 +5,9 @@
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
-#include "galil.h"
+
 #include "MotorController.h"
+#include "Modules/galil.h"
 
 using namespace std;
 using namespace galil;
@@ -26,24 +27,26 @@ namespace ArmController
 	{
 		long int sum;
 		MotorController::initialized = false;
-		
+
 		//calculate conversion values
-		enc2Radian[1] = PI/6595000;//a
-		enc2Radian[2] = PI/5100000;//b
-		enc2Radian[3] = PI/1800000;//c
-		enc2Radian[4] = PI/2300000;//d
-		enc2Radian[5] = PI/2000000;//e
-		enc2Radian[6] = -PI/2000000;//f
-		enc2Radian[7] = PI/1500000; //g
+		enc2Radian[0] = 0;
+		enc2Radian[1] = 2*PI/13200000;//a
+		enc2Radian[2] = 2*PI/13320000;//b
+		enc2Radian[3] = 2*PI/4720000;//c
+		enc2Radian[4] = 2*PI/4720000;//d
+		enc2Radian[5] = 2*PI/3840000;//e
+		enc2Radian[6] = -(2*PI)/4000000;//f
+		enc2Radian[7] = 2*PI/2880000; //g
+		enc2Radian[8] = 0;
 	
 		rad2Enc[0] = 0;
-		rad2Enc[1] = 6595000/PI;//a
-		rad2Enc[2] = 5100000/PI;//b
-		rad2Enc[3] = 1800000/PI;//c
-		rad2Enc[4] = 2300000/PI;//d
-		rad2Enc[5] = 2000000/PI;//e
-		rad2Enc[6] = -2000000/PI;//f
-		rad2Enc[7] = 1500000/PI; //g
+		rad2Enc[1] = 13200000/(2*PI);//a
+		rad2Enc[2] = 13320000/(2*PI);//b
+		rad2Enc[3] = 4720000/(2*PI);//c
+		rad2Enc[4] = 4720000/(2*PI);//d
+		rad2Enc[5] = 3840000/(2*PI);//e
+		rad2Enc[6] = -4000000/(2*PI);//f
+		rad2Enc[7] = 2880000/(2*PI); //g
 		rad2Enc[8] = 0;
 
 		sum = 6595000+5100000+1800000+2300000+2000000+2000000+1500000;
@@ -112,12 +115,21 @@ namespace ArmController
 		controller.command("IT*=0.6");	
 
 		// ready position, #debug I believe this should be a function of its own, and the ready position should be recovered from the text file as well.
-		definePosition(1, (PI/2));
+/*		definePosition(1, (PI/2));
 		definePosition(2, (PI/2));
 		definePosition(3, 0);
 		definePosition(4, (PI/2));
 		definePosition(5, (PI/2));
 		definePosition(6, -(PI/2));
+		definePosition(7, 0);
+		definePosition(8, 0);
+*/
+		definePosition(1, 0);
+		definePosition(2, 0);
+		definePosition(3, 0);
+		definePosition(4, 0);
+		definePosition(5, 0);
+		definePosition(6, 0);
 		definePosition(7, 0);
 		definePosition(8, 0);
 
@@ -296,6 +308,7 @@ namespace ArmController
 	{
 		if(isValidMotor(motorNum)){
 			long encVal = (angToEnc(motorNum,angle));
+			cout << encVal << endl;
 			string motor;
 			motor = motorLookup[motorNum];
 			long temp = abs(encVal);
@@ -441,10 +454,10 @@ namespace ArmController
 
 	}
 
-	long MotorController::angToEnc(int motorNum, float encCount) // #debug needs to be finished, Also need to check initialized
+	long MotorController::angToEnc(int motorNum, float ang) // #debug needs to be finished, Also need to check initialized
 	{
 		if (motorNum < 9 && motorNum > 0){
-			return encCount * rad2Enc[motorNum]; 
+			return ang * rad2Enc[motorNum]; 
 		}
 		else{
 			cerr << "motor number outside range" << endl;

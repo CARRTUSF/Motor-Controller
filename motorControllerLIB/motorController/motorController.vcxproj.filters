@@ -18,10 +18,10 @@
     <ClInclude Include="MotorController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SockStream.h">
+    <ClInclude Include="Modules\galil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="galil.h">
+    <ClInclude Include="Modules\SockStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
