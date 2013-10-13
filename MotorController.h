@@ -1,50 +1,62 @@
-#pragma once
+#ifndef MOTORCONTROLLER_H
+#define MOTORCONTROLLER_H
 
-#include <vector>
+#include <exception>
 #include <string>
-#include "WMRA_structs.h"
-#include "GalilController.h"
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <ctype.h>
+//#include "Galil.h"
+#include "WmraTypes.h"
+#include "galilController.h"
 
-namespace WMRA {
-	class MotorController
-	{
-	public:
-		MotorController();
-		~MotorController();
-		bool isInitialized(); // return initialized
-		bool motorsOn(); // Turns motors on
-		bool motorsOff(); // Turns motors off
-		bool Stop(); //emergancy stop
-		bool Stop(int motorNum); // emergancy stop a single motor
-		double readPos(int motorNum); // returns the current motor angle in radians
-		std::vector<double> readPos(); // returns the current motor angle in radians
-		double readPosErr(int motorNum); // returns the error in  
-		bool definePosition(int motorNum, double angle); // Sets the selected motor to a certain encoder value
-		bool positionControl(int motorNum,double angle);  // moves selected motor to absolute radian angle
-		bool setMaxVelocity(int motorNum, double angularVelocity); // Sets the maximum angular velocity for selected motor
-		bool setAccel(int motorNum, double angularAccelaration); // Sets the acceleration of the selected motor
-		bool setDecel(int motorNum, double angularDecelaration); // Read setAccel()
-		bool motorMode(int mode); // Changes the type of motor movement mode to selected value for all motors
-		bool LIadd(std::vector<long> angle); // Linear Interpolation, Adds the input milestone to list of milestones
-		bool LIbegin(); // Begins Linear Interpolation movement		
-		void velocityMove(int motor, long int v_value, long int a_value, long int d_value); // Move a single motor a selected velocity, acceleration, and deceleration. CAUTION!: Use Stop() or velocityALLStop() to stop the motors
-		bool setPID(int motorNum, int P, int I, int D); // Sets the PID values of a selected motor
+using namespace std;
 
-	private:
-		static std::string motorLookup[9]; // Lookup table that converts the user given motor number to a motor letter
-		static bool initialized; // Flag that shows if motor controller has been properly initialized	
-		static long rad2Enc[9]; // Conversion factors used to convert radians to encoder values
-		static double enc2Rad[9]; // Conversion factors used to convert encoder values to radians
 
-		static GalilController controller; // Galil controller class used to control WMRA-2
-		//static ConfigReader reader; // reads defaults from settings.conf
-		static bool isValidMotor(int motorNum); // Uses motorLookup t check if a selected motor is a valid motor. 1-8 [A-H]
-		static bool MotorController::getDefaults(); // reads the default values from settings.conf
-		double enc2rad(int motorNum, long enc);  // converts encoder number to radian value for selected joint number
-		long rad2enc(int motorNum, double rad);  // converts radian value to encoder number for selected joint number
-		static bool setMotorMode(int motorNum, int mode);
-		static bool setBrushedMode(int motorNum, int mode);
-		static bool setSmoothing(double value);
-	};
+class MotorController {
+public:
+   enum motionMode  {POS_CONTROL = 0, LINEAR};
+   MotorController();
+   bool initialize();
+   bool setMotorMode(int mode);
+   /**
+   * \brief adds the next linear segment. sends to motor controller
+   * \@param [in] angles vector of joint angles in radians. 
+   * \@param [in] section speed in rad/s^-1 
+   */
+   bool addLinearMotionSegment(vector<double> angles, vector<double> speeds);
+   bool beginLI();/// \brief start linear motion
+   bool isInitialized(); /// \brief return initialized
+   bool wmraSetup();
+   bool Stop(); //emergancy stop
+   bool Stop(int motorNum); // emergancy stop a single motor
+   double readPos(int motorNum); // returns the current motor angle in radians
+   double readPosAll(); // returns the current motor angle in radians
+   double readPosErr(int motorNum); // returns the error in 
 
-}
+   bool setMaxVelocity(int motorNum, float angularVelocity);
+   bool setAccel(int motorNum, float angularAccelaration);
+   bool setAccelAll(std::vector<int> acclVal);
+   bool setDecel(int motorNum, float angularDecelaration);
+   float encToAng(int motorNum, long enc);
+   long angToEnc(int motorNum, float angle);
+   bool positionControl(int motor,float angle);
+   bool MotorsOFF();
+   double rad2Enc[9];
+
+private:
+
+   bool initialized ;
+   string ipAddr;
+   double enc2Radian[9];
+   //double rad2Enc[9];
+   double normalize[8]; // doesn't apply to gripper
+   static string motorLookup[9];
+   //bool readSettings(); // read settings 
+   bool definePosition(int motorNum, float angle);
+   bool setPID(int motorNum, int P, int I, int D);
+   bool isValidMotor(int motorNum);
+};
+
+#endif;
